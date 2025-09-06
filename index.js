@@ -11,16 +11,7 @@ const model = genAI.getGenerativeModel({ model: "gemini-1.5-flash" });
 const app = express()
 app.use(express.json())
 
-app.use(
-  cors({
-    origin: [
-      "https://geminiapi-ecru.vercel.app/",
-      "http://localhost:5173",
-    ],
-    methods: ["GET", "POST", "PUT", "DELETE"],
-    credentials: true,
-  })
-);
+app.use(cors())
 
 mongoose.connect(process.env.MONGO_URL).then(() => {
   console.log("mongodb connected successfully");
