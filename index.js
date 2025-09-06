@@ -13,9 +13,9 @@ app.use(express.json())
 
 app.use(
   cors({
-    origin: [       
-      "https://geminiapi-ecru.vercel.app" , // change to your actual Vercel frontend URL
- "http://localhost:5173",            // keep for local dev (Vite)
+    origin: [
+      "https://geminiapi-ecru.vercel.app", 
+      "http://localhost:5173",            
     ],
     methods: ["GET", "POST", "PUT", "DELETE"],
     credentials: true,
@@ -23,47 +23,47 @@ app.use(
 );
 
 mongoose.connect(process.env.MONGO_URL).then(() => {
-    console.log("mongodb connected successfully");
+  console.log("mongodb connected successfully");
 
 }).catch((err) => {
-    console.log("failed to connect mongodb", err);
+  console.log("failed to connect mongodb", err);
 
 })
 
 const PORT = process.env.PORT || 5000;
 app.listen(PORT, () => {
-    console.log(`Server running on port ${PORT}`);
+  console.log(`Server running on port ${PORT}`);
 });
 
 app.get("/", (req, res) => {
   res.send("Backend is running ");
 });
-const geminiSchema =new mongoose.Schema
-(
+const geminiSchema = new mongoose.Schema
+  (
     {
-        title: String,
-        content: String,
-        summary: String,
-        tags: [String],
-        createdBy: String,
+      title: String,
+      content: String,
+      summary: String,
+      tags: [String],
+      createdBy: String,
     },
     {
-        timestamps: true,
-        collection: "documents",
+      timestamps: true,
+      collection: "documents",
     },
 
-)
+  )
 
-const geminiModel=mongoose.model("Gemini",geminiSchema)
+const geminiModel = mongoose.model("Gemini", geminiSchema)
 
 app.get("/doclist", function (req, res) {
-    geminiModel.find().then((retdata) => {
-        res.send(retdata)
-    }).catch((err) => {
-        res.send("error to retdata", err)
-        console.log(err);
+  geminiModel.find().then((retdata) => {
+    res.send(retdata)
+  }).catch((err) => {
+    res.send("error to retdata", err)
+    console.log(err);
 
-    })
+  })
 })
 
 app.get("/adddoc/:id", async (req, res) => {
@@ -82,34 +82,34 @@ app.get("/adddoc/:id", async (req, res) => {
   }
 });
 
-app.post("/addnewdoc",async function(req,res){
-    const {title,content,tags,summary,createdBy}=req.body
+app.post("/addnewdoc", async function (req, res) {
+  const { title, content, tags, summary, createdBy } = req.body
 
-    try{
-        const newDoc=new geminiModel(
-            {
-                title,
-                content,
-                summary,
-                tags,
-                createdBy,
-            }
-        )
-       await newDoc.save()
-       res.json(newDoc)
-    }catch(err){
-        res.status(501).send("internal error")
-    }
+  try {
+    const newDoc = new geminiModel(
+      {
+        title,
+        content,
+        summary,
+        tags,
+        createdBy,
+      }
+    )
+    await newDoc.save()
+    res.json(newDoc)
+  } catch (err) {
+    res.status(501).send("internal error")
+  }
 })
 
-app.put("/updatedoc/:id",async(req,res)=>{
-    const {id}=req.params
-    const updatedoc={
-        title:req.body.title,
-        content:req.body.content,
-    }
-    try{
-     const update = await geminiModel.findByIdAndUpdate(
+app.put("/updatedoc/:id", async (req, res) => {
+  const { id } = req.params
+  const updatedoc = {
+    title: req.body.title,
+    content: req.body.content,
+  }
+  try {
+    const update = await geminiModel.findByIdAndUpdate(
       id,
       updatedoc,
       { new: true }
@@ -120,20 +120,20 @@ app.put("/updatedoc/:id",async(req,res)=>{
     }
 
     res.json(update);
-        
-    }catch(err){
-        res.status(500).send("internal error while update")
-    }
+
+  } catch (err) {
+    res.status(500).send("internal error while update")
+  }
 })
 
-app.delete("/deletedoc/:id",async(req,res)=>{
-    try{
-        const {id}=req.params
-        await geminiModel.findByIdAndDelete(id)
-        res.json({success:true,message:"document deleted successfully"})
-    }catch(err){
-        res.status(500).send("internal server error",err)
-    }
+app.delete("/deletedoc/:id", async (req, res) => {
+  try {
+    const { id } = req.params
+    await geminiModel.findByIdAndDelete(id)
+    res.json({ success: true, message: "document deleted successfully" })
+  } catch (err) {
+    res.status(500).send("internal server error", err)
+  }
 
 })
 
