@@ -13,7 +13,8 @@ app.use(express.json())
 
 app.use(
   cors({
-    origin: [         // change to your actual Vercel frontend URL
+    origin: [       
+      "https://geminiapi-ecru.vercel.app" , // change to your actual Vercel frontend URL
  "http://localhost:5173",            // keep for local dev (Vite)
     ],
     methods: ["GET", "POST", "PUT", "DELETE"],
