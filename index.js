@@ -14,7 +14,7 @@ app.use(express.json())
 app.use(
   cors({
     origin: [
-      "https://geminiapi-ecru.vercel.app/", 
+      "https://gemini-ai-ten-omega.vercel.app", 
       "http://localhost:5173",            
     ],
     methods: ["GET", "POST", "PUT", "DELETE"],
