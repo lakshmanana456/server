@@ -14,8 +14,8 @@ app.use(express.json())
 app.use(
   cors({
     origin: [
-      "https://geminiapi-ecru.vercel.app", 
-      "http://localhost:5173",            
+      "https://geminiapi-ecru.vercel.app/",
+      "http://localhost:5173",
     ],
     methods: ["GET", "POST", "PUT", "DELETE"],
     credentials: true,
@@ -56,15 +56,15 @@ const geminiSchema = new mongoose.Schema
 
 const geminiModel = mongoose.model("Gemini", geminiSchema)
 
-app.get("/doclist", async (req, res) => {
-  try {
-    const docs = await geminiModel.find(); // must match your model
-    res.json(docs);
-  } catch (err) {
-    console.log("Error retrieving documents:", err);
-    res.status(500).json({ error: "Failed to fetch documents" });
-  }
-});
+app.get("/doclist", async function (req, res) {
+await  geminiModel.find().then((retdata) => {
+    res.send(retdata)
+  }).catch((err) => {
+    res.send("error to retdata", err)
+    console.log(err);
+
+  })
+})
 
 app.get("/adddoc/:id", async (req, res) => {
   try {
